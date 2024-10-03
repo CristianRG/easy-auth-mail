@@ -1,0 +1,20 @@
+{
+  "name": "easy-auth-mail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "pnpm install || npm install || yarn install"
+  },
+  "keywords": ["authentication", "mail", "nodemailer", "easy"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "5.1.1",
+    "dotenv": "16.4.5",
+    "nodemailer": "6.9.15"
+  },
+  "type": "module"
+}
