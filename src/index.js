@@ -28,9 +28,9 @@ export const createTransport = ({ service, auth }) => {
  * @param {string} param.user.password - The user's password to generate the token
  * @param {string} param.sender - The email address of the sender.
  * @param {Mail} param.transporter - The Nodemailer transporter object used to send the email.
- * @returns {String} Returns token value
+ * @returns {Promise} Returns a promise with token value
  */
-export const authenticateUser = ({ user: { mail, password }, sender, transporter }) => {
+export const authenticateUser = async ({ user: { mail, password }, sender, transporter }) => {
     const userToken = new UserToken({ user: { email: mail, password: password } })
     userToken.generateToken()
 
@@ -41,17 +41,19 @@ export const authenticateUser = ({ user: { mail, password }, sender, transporter
         text: `Your token is: ${userToken.token}`
     }
 
-    transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-            console.log(err)
-            return
+    const response = await transporter.sendMail(mailOptions)
+
+    return new Promise((resolve, reject) => {
+        if (response.accepted.length > 0) {
+            const timeOut = setTimeout(() => {
+                state.removeToken(userToken, (response) => { })
+            }, 10000)
+            state.addToken({ userToken, timeOutID: timeOut })
+            resolve(userToken.token)
+        } else {
+            reject('not send mail')
         }
-        const timeOut = setTimeout(() => {
-            state.removeToken(userToken, (response) => {})
-        }, 10000)
-        state.addToken({ userToken, timeOutID: timeOut })
     })
-    return userToken.token
 }
 
 /**
