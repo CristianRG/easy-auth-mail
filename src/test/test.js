@@ -1,18 +1,12 @@
 import { authenticateToken, authenticateUser, createTransport } from "../index.js"
-import path from 'path'
 import UserToken from "../models/UserToken.js"
 import dotenv from 'dotenv'
-import { types } from "../models/MailOptions.js"
 dotenv.config()
 const user = process.env.MAIL_SENDER
 const pass = process.env.PASS_SENDER
 
 const transporter = createTransport({ service: 'gmail', auth: { user: user, pass: pass } }) // Create a new transport to authenticate the sender
-const token = await authenticateUser({ 
-    user: { mail: 'rizogomezalexander@gmail.com', password: 'receptorpasswordinyourapp' }, 
-    sender: user, transporter, 
-    content: { path: path.join(process.cwd(), 'src', 'test', 'index.html'), subject: 'Authentication from your account', type: types["text/html"] }
-}) // Authenticate the user by mail sending a token
+const token = await authenticateUser({ user: { mail: 'receptoremail@domain.com', password: 'receptorpasswordinyourapp' }, sender: user, transporter }) // Authenticate the user by mail sending a token
 // Example
 // In case that receive a token in your app. This will be true cause the dependence just show if your service accepted to send the message always 
 // receptor mail was wrong or not exits. Dont use this code above in production you can use this code inside a route in express where you receive a 
