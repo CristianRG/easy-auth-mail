@@ -31,10 +31,11 @@ class StateToken {
         }
     }
     /**
-     * @param {UserToken} userToken 
+     * @param {String} userToken - `String` con el valor del token
+     * @returns {UserToken | null} retorna el `token` o `null` en caso de no encontrarlo
      */
     getToken(userToken){
-        const indexOf = this.state.findIndex(token => token.userToken.token === userToken.token)
+        const indexOf = this.state.findIndex(token => token.userToken.token === userToken)
         if(indexOf !== -1){
             return this.state[indexOf]
         }
