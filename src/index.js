@@ -27,14 +27,14 @@ export const createTransport = ({ service, auth }) => {
  * @param {Object} param - Parámetros para crear las opciones de correo.
  * @param {{mail: string}} param.sender - Correo del remitente.
  * @param {{mail: string, token: string}} param.user - Correo y token del usuario.
- * @param {{subject: string, document: {path: string, matches: [{match: { id: string, value: string }}]}}} param.content - Contenido del correo, incluyendo el asunto y documento HTML para personalización.
+ * @param {{subject: string, html: {path: string, matches: [{match: { id: string, value: string }}]}}} param.content - Contenido del correo, incluyendo el asunto y documento HTML para personalización.
  * @returns {MailOptions} - Objeto con las opciones configuradas para el correo.
  */
 export const createMailOptions = async ({ sender, user, content }) => {
     const mailOptions = new MailOptions(sender.mail, user.mail, content.subject)
 
-    if (content.document) {
-        const document = await customHTML({ path: content.document.path, matches: content.document.matches })
+    if (content.html) {
+        const document = await customHTML({ path: content.html.path, matches: content.html.matches })
         if (document.type == 'success') {
             mailOptions.setContent(types['text/html'], document.data.html)
         } else {
