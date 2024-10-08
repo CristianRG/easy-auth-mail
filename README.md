@@ -62,23 +62,32 @@ const pass = process.env.PASS_SENDER
 ```
 #### 5) Finalmente utiliza las funciones del proyecto
 ```javascript
-import { authenticateToken, authenticateUser, createTransport } from "../index.js"
+// TODO: Importa las funciones (las rutas son relativas, por lo que no deberias copiar estas importaciones)
+import { authenticateToken, authenticateUser, createMailOptions, createTransport } from "../index.js"
 import UserToken from "../models/UserToken.js"
 import dotenv from 'dotenv'
 dotenv.config()
+// carga las variables de entorno
 const user = process.env.MAIL_SENDER
 const pass = process.env.PASS_SENDER
 
-const transporter = createTransport({ service: 'gmail', auth: { user: user, pass: pass } }) // Create a new transport to authenticate the sender
-const token = await authenticateUser({ user: { mail: 'receptoremail@domain.com', password: 'receptorpasswordinyourapp' }, sender: user, transporter }) // Authenticate the user by mail sending a token
-// Example
-// In case that receive a token in your app. This will be true cause the dependence just show if your service accepted to send the message always 
-// receptor mail was wrong or not exits. Dont use this code above in production you can use this code inside a route in express where you receive a 
-// token as parameter
-const tokenReceived = new UserToken({ user: { email: null, password: null } }) // create a object
-tokenReceived.token = token // set token received
-const isAuthenticated = authenticateToken({ token: tokenReceived }) // check if token exits. Return true or false
-console.log("Is authenticated: ", isAuthenticated) // print true or false
+// crea el transportador (te permitira conectarte con tu servicio de mail)
+// indica que tipo de servicio quieres utiliza e ingresa las credenciales para utilizar tu correo
+const transport = createTransport({service: 'gmail', auth: {user: user, pass: pass}})
+// en tu aplicación, como en un endpoint, puedes crear un objeto de tipo UserToken una vez obtengas las credenciales
+const userToken = new UserToken({user: {email: 'maildestinatario@dominio.com', password: 'contraseñadestinatario'}})
+// genera el token. Esto tambien encrypta la contraseña
+userToken.generateToken()
+// crea las opciones del mail, como el correo a quien va dirigido, el asunto y el documento a insertar en caso de haberlo
+const mailOptions = await createMailOptions({sender: {mail: user}, user: {mail: userToken.email, token: userToken.token}, content: {
+    subject: 'Confirmación de correo'
+}})
+// envía el correo para autentificar el usuario. Esta función retorna el token del usuario en caso de que el correo haya sido enviado
+// agrega el token a un "estado" -> lista; donde se mantendrá hasta que ingrese su token o se elimine automaticamente
+const tokenString = await authenticateUser({userToken, transport, mailOptions, config: {timeOutDuration: (1000*60*5)}}) // el tiempo de duración es de 5 minutos
+// en tu aplicación, como en un endpoint, puedes verificar que el token sea correcto. Usaremos el valor obtenido anteriormente
+const isAuthenticated =authenticateToken({token: tokenString}) // retorna true o false en caso de estar o no registrado el token
+console.log(isAuthenticated) // imprime true o false
 ```
 
 
