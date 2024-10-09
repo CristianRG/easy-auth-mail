@@ -27,6 +27,7 @@ src/html/
 spec/
 __tests__/
 coverage/
+.env
 
 # Documentación interna
 docs/
