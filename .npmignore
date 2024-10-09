@@ -1,0 +1,32 @@
+# Sistema de control de versiones
+.git
+.gitignore
+
+# IDE y editor específicos
+.idea/
+.vscode/
+.DS_Store
+
+# Archivos de configuración de herramientas
+.eslintrc.js
+.prettierrc
+.babelrc
+tsconfig.json
+webpack.config.js
+
+# Directorios de compilación
+dist/
+build/
+
+# Dependencias locales
+node_modules/
+
+# Tests y cobertura
+src/test/
+src/html/
+spec/
+__tests__/
+coverage/
+
+# Documentación interna
+docs/
