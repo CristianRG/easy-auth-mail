@@ -28,6 +28,7 @@ spec/
 __tests__/
 coverage/
 .env
+src/configuration.js
 
 # Documentación interna
 docs/
